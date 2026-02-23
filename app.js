@@ -1,6 +1,7 @@
 /* ============================================================
    MTG Proxy Builder — app.js
    Static single-page app. No build step required.
+   Uses local card data from data/cards.json (synced via GitHub Action).
    ============================================================ */
 
 (() => {
@@ -22,11 +23,17 @@
     // Preview canvas scale: mm → CSS‑px (at 72 DPI‑ish for comfortable screen display)
     const PREVIEW_SCALE = 2.5;   // 1mm = 2.5px on screen
 
+    // Scryfall image CDN base
+    const IMG_CDN = 'https://cards.scryfall.io';
+
     // ── State ──────────────────────────────────────────────
-    let cardSlots   = [];   // { name, set, qty, imageData[], error? }
     let allImages   = [];   // flat list of base64 image strings (one per card slot)
     let pageCount   = 0;
     let isLoading   = false;
+
+    // Card database: Map<lowercase name → Array<{n, id, s, cn, o, d?}>>
+    let cardDB      = null;
+    let cardDBReady = false;
 
     // ── DOM refs (assigned in init) ────────────────────────
     let dom = {};
@@ -41,8 +48,86 @@
             cutColour:   dom.cutColour.value,
             cutWidth:    parseFloat(dom.cutWidth.value),
             cutStyle:    dom.cutStyle.value,          // 'solid' | 'dashed'
-            imageQuality: dom.imageQuality.value,     // 'png' | 'large'
+            imageQuality: dom.imageQuality.value,     // 'png' | 'large' | 'normal' | 'border_crop'
         };
+    }
+
+    // ── Image URL Builder ──────────────────────────────────
+    // Reconstructs Scryfall image URLs from a card's id.
+    // Pattern: https://cards.scryfall.io/{quality}/{face}/{id[0]}/{id[1]}/{id}.{ext}
+    function buildImageUrl(id, quality, face = 'front') {
+        const ext = (quality === 'png') ? 'png' : 'jpg';
+        return `${IMG_CDN}/${quality}/${face}/${id[0]}/${id[1]}/${id}.${ext}`;
+    }
+
+    // Build a Scryfall prints search URL from oracle_id
+    function buildPrintsUri(oracleId) {
+        return `https://api.scryfall.com/cards/search?order=released&q=oracleid%3A${oracleId}&unique=prints`;
+    }
+
+    // ── Card Database Loader ───────────────────────────────
+    async function loadCardDB() {
+        dom.dbStatus.textContent = 'Loading card database…';
+        dom.btnFetch.disabled = true;
+
+        try {
+            const res = await fetch('data/cards.json');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const cards = await res.json();
+
+            // Build lookup map: lowercase name → array of matching entries
+            cardDB = new Map();
+            for (const card of cards) {
+                const key = card.n.toLowerCase();
+                if (!cardDB.has(key)) {
+                    cardDB.set(key, []);
+                }
+                cardDB.get(key).push(card);
+            }
+
+            cardDBReady = true;
+            dom.dbStatus.textContent = `${cards.length.toLocaleString()} cards loaded`;
+            dom.btnFetch.disabled = false;
+
+            // Also try to load meta.json for the updated date
+            try {
+                const metaRes = await fetch('data/meta.json');
+                if (metaRes.ok) {
+                    const meta = await metaRes.json();
+                    const date = new Date(meta.updated).toLocaleDateString();
+                    dom.dbStatus.textContent = `${cards.length.toLocaleString()} cards · Updated ${date}`;
+                }
+            } catch (_) { /* meta.json is optional */ }
+
+        } catch (err) {
+            dom.dbStatus.textContent = 'Failed to load card data — using API fallback';
+            cardDBReady = false;
+            dom.btnFetch.disabled = false;
+            console.warn('Card DB load failed:', err);
+        }
+    }
+
+    // ── Card Lookup ────────────────────────────────────────
+    // Look up a card by name (and optional set) from local DB.
+    // Returns the matched card entry or null.
+    function lookupCard(name, set) {
+        if (!cardDB) return null;
+
+        const key = name.toLowerCase();
+        const matches = cardDB.get(key);
+        if (!matches || !matches.length) return null;
+
+        if (set) {
+            // Filter by set code (case-insensitive)
+            const setLower = set.toLowerCase();
+            const setMatch = matches.find(c => c.s === setLower);
+            if (setMatch) return setMatch;
+            // If no exact set match, still return first result but warn
+            return null;
+        }
+
+        // Return first match (Scryfall's "best" version)
+        return matches[0];
     }
 
     // ── Input Parser ───────────────────────────────────────
@@ -62,8 +147,9 @@
         }).filter(Boolean);
     }
 
-    // ── Scryfall Fetch ─────────────────────────────────────
-    async function fetchCard(name, set) {
+    // ── Scryfall API Fallback ──────────────────────────────
+    // Used when the local DB is unavailable or a card isn't found locally.
+    async function fetchCardFromAPI(name, set) {
         let url = `https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(name)}`;
         if (set) url += `&set=${encodeURIComponent(set.toLowerCase())}`;
 
@@ -75,8 +161,7 @@
         return res.json();
     }
 
-    function getImageUris(card) {
-        // Returns array of image_uris objects (one per face)
+    function getImageUrisFromAPICard(card) {
         if (card.image_uris) return [card.image_uris];
         if (card.card_faces) {
             return card.card_faces
@@ -86,6 +171,7 @@
         return [];
     }
 
+    // ── Image Loader ───────────────────────────────────────
     function getImageData(url) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -97,9 +183,22 @@
                 c.getContext('2d').drawImage(img, 0, 0);
                 resolve(c.toDataURL('image/jpeg', 0.95));
             };
-            img.onerror = () => reject(new Error('Image load failed'));
+            img.onerror = () => reject(new Error(`Image load failed: ${url}`));
             img.src = url;
         });
+    }
+
+    // ── Get image URLs for a card entry from local DB ──────
+    function getImageUrlsForCard(card, quality) {
+        const urls = [];
+        if (card.d) {
+            // Double-faced card: front and back
+            urls.push(buildImageUrl(card.id, quality, 'front'));
+            urls.push(buildImageUrl(card.id, quality, 'back'));
+        } else {
+            urls.push(buildImageUrl(card.id, quality, 'front'));
+        }
+        return urls;
     }
 
     // ── Fetch & Build Image List ───────────────────────────
@@ -122,29 +221,53 @@
         dom.btnDownload.disabled = true;
 
         const settings = getSettings();
-        const quality  = settings.imageQuality; // 'png' | 'large'
+        const quality  = settings.imageQuality;
 
         let done = 0;
         const total = entries.reduce((s, e) => s + e.qty, 0);
 
         for (const entry of entries) {
             try {
-                // Scryfall rate limit: 50ms between requests
-                await sleep(80);
-                const card = await fetchCard(entry.name, entry.set);
-                const faces = getImageUris(card);
+                let imageUrls = [];
 
-                if (!faces.length) {
+                // Try local DB first
+                const localCard = lookupCard(entry.name, entry.set);
+
+                if (localCard) {
+                    imageUrls = getImageUrlsForCard(localCard, quality);
+                } else if (cardDBReady && entry.set) {
+                    // Name found but set doesn't match — try without set filter
+                    const fallbackCard = lookupCard(entry.name, null);
+                    if (fallbackCard) {
+                        addError(`"${entry.name}" not found in set [${entry.set}], using ${fallbackCard.s.toUpperCase()} instead`);
+                        imageUrls = getImageUrlsForCard(fallbackCard, quality);
+                    }
+                }
+
+                if (!imageUrls.length) {
+                    // Fallback: try Scryfall API
+                    if (cardDBReady) {
+                        addError(`"${entry.name}" not found in local data, trying API…`);
+                    }
+                    await sleep(80); // Scryfall rate limit
+                    const apiCard = await fetchCardFromAPI(entry.name, entry.set);
+                    const faces = getImageUrisFromAPICard(apiCard);
+                    for (const face of faces) {
+                        const url = face[quality] || face.large || face.normal;
+                        imageUrls.push(url);
+                    }
+                }
+
+                if (!imageUrls.length) {
                     addError(`No images available for "${entry.name}"`);
                     done += entry.qty;
                     setProgress(done / total);
                     continue;
                 }
 
-                // Download images for each face
+                // Download pixel data for each image URL
                 const faceDataList = [];
-                for (const face of faces) {
-                    const url = face[quality] || face.large || face.normal;
+                for (const url of imageUrls) {
                     const data = await getImageData(url);
                     faceDataList.push(data);
                 }
@@ -501,6 +624,7 @@
             statPages:          $('#statPages'),
             pageContainer:      $('#pageContainer'),
             emptyState:         $('#emptyState'),
+            dbStatus:           $('#dbStatus'),
         };
 
         // Buttons
@@ -519,6 +643,9 @@
             dom[id].addEventListener('change', onSettingsChange);
         });
         dom.cutColour.addEventListener('input', onSettingsChange);
+
+        // Load the local card database
+        loadCardDB();
     }
 
     document.addEventListener('DOMContentLoaded', init);

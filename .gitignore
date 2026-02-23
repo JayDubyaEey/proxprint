@@ -1,0 +1,18 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+
+# Temp files from sync script
+*.tmp
+
+# Keep the data directory but ignore the old sample files
+data/unique.json
+data/default.json

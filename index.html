@@ -74,7 +74,7 @@
 
             <!-- Actions -->
             <div class="sidebar-section">
-                <button id="btnFetch" class="btn btn-primary">Fetch &amp; Preview</button>
+                <button id="btnFetch" class="btn btn-primary" disabled>Fetch &amp; Preview</button>
 
                 <div id="progressContainer" class="progress-container">
                     <div class="progress-bar-track">
@@ -87,6 +87,11 @@
 
                 <button id="btnDownload" class="btn btn-download" disabled>Download PDF</button>
                 <button id="btnClear" class="btn btn-clear">Clear All</button>
+            </div>
+
+            <!-- Database status -->
+            <div class="sidebar-section sidebar-footer">
+                <div id="dbStatus" class="db-status">Loading card database…</div>
             </div>
         </aside>
 

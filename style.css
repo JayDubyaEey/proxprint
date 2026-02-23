@@ -368,6 +368,20 @@ textarea#cardList:focus {
 ::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #1a5276; }
 
+/* ===== Database Status Footer ===== */
+.sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid #0f3460;
+    border-bottom: none;
+}
+
+.db-status {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.4;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 800px) {
     .main-content {
