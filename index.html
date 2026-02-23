@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTG Proxy Builder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+    <!-- Header -->
+    <header>
+        <h1>MTG Proxy Builder</h1>
+        <span class="subtitle">Generate print-ready proxy sheets</span>
+    </header>
+
+    <div class="main-content">
+        <!-- ─── Sidebar ─── -->
+        <aside class="sidebar">
+
+            <!-- Card list input -->
+            <div class="sidebar-section">
+                <h3>Card List</h3>
+                <textarea id="cardList" placeholder="4 Lightning Bolt&#10;1 Sol Ring&#10;2 Fable of the Mirror-Breaker&#10;1 Counterspell [MH2]"></textarea>
+                <div class="input-help">
+                    One card per line. Prefix with quantity.<br>
+                    Add <strong>[SET]</strong> for a specific printing, e.g. <strong>1 Bolt [2XM]</strong>.<br>
+                    Double-faced cards print both faces automatically.
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div class="sidebar-section">
+                <h3>Image Quality</h3>
+                <div class="setting-row">
+                    <label for="imageQuality">Source</label>
+                    <select id="imageQuality">
+                        <option value="png">PNG (745×1040, best)</option>
+                        <option value="large">Large JPG (672×936)</option>
+                        <option value="normal">Normal JPG (488×680)</option>
+                        <option value="border_crop">Border Crop</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Cut Lines</h3>
+                <div class="setting-row">
+                    <label for="cutLineMode">Style</label>
+                    <select id="cutLineMode">
+                        <option value="none">None</option>
+                        <option value="corners">Corner Marks</option>
+                        <option value="grid" selected>Full Grid Lines</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <label for="cutColour">Colour</label>
+                    <input type="color" id="cutColour" value="#888888">
+                </div>
+                <div class="setting-row">
+                    <label for="cutWidth">Width</label>
+                    <input type="range" id="cutWidth" min="0.1" max="1.5" step="0.1" value="0.3">
+                    <span class="range-value" id="cutWidthValue">0.3mm</span>
+                </div>
+                <div class="setting-row">
+                    <label for="cutStyle">Line</label>
+                    <select id="cutStyle">
+                        <option value="solid" selected>Solid</option>
+                        <option value="dashed">Dashed</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="sidebar-section">
+                <button id="btnFetch" class="btn btn-primary">Fetch &amp; Preview</button>
+
+                <div id="progressContainer" class="progress-container">
+                    <div class="progress-bar-track">
+                        <div id="progressFill" class="progress-bar-fill"></div>
+                    </div>
+                    <div id="progressText" class="progress-text">Starting…</div>
+                </div>
+
+                <div id="errorLog" class="error-log"></div>
+
+                <button id="btnDownload" class="btn btn-download" disabled>Download PDF</button>
+                <button id="btnClear" class="btn btn-clear">Clear All</button>
+            </div>
+        </aside>
+
+        <!-- ─── Preview Area ─── -->
+        <main class="preview-area">
+            <!-- Stats bar (hidden until preview) -->
+            <div id="statsBar" class="stats-bar" style="display:none;">
+                <div class="stat">
+                    <span id="statCards" class="stat-value">0</span>
+                    <span class="stat-label">Cards</span>
+                </div>
+                <div class="divider"></div>
+                <div class="stat">
+                    <span id="statPages" class="stat-value">0</span>
+                    <span class="stat-label">Pages</span>
+                </div>
+            </div>
+
+            <!-- Page canvases go here -->
+            <div id="pageContainer" class="page-preview-container"></div>
+
+            <!-- Empty state -->
+            <div id="emptyState" class="empty-state">
+                <div class="icon">🃏</div>
+                <p>Enter card names in the sidebar and click <strong>Fetch &amp; Preview</strong> to see your proxy sheet.</p>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
