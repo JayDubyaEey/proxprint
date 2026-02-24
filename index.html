@@ -74,7 +74,9 @@
 
             <!-- Actions -->
             <div class="sidebar-section">
-                <button id="btnFetch" class="btn btn-primary" disabled>Fetch &amp; Preview</button>
+                <button id="btnLoadCards" class="btn btn-primary" disabled>Load Cards</button>
+                <button id="btnGenerate" class="btn btn-primary" style="display:none">Generate Preview</button>
+                <button id="btnBackToCards" class="btn btn-secondary" style="display:none">← Back to Cards</button>
 
                 <div id="progressContainer" class="progress-container">
                     <div class="progress-bar-track">
@@ -110,13 +112,21 @@
                 </div>
             </div>
 
-            <!-- Page canvases go here -->
-            <div id="pageContainer" class="page-preview-container"></div>
+            <!-- Card list panel (shown after "Load Cards") -->
+            <div id="cardListPanel" class="card-list-panel" style="display:none;">
+                <div id="cardListStats" class="cl-stats"></div>
+                <div id="cardListView" class="cl-container"></div>
+            </div>
+
+            <!-- Preview panel (page canvases, shown after "Generate Preview") -->
+            <div id="previewPanel" class="preview-panel" style="display:none;">
+                <div id="pageContainer" class="page-preview-container"></div>
+            </div>
 
             <!-- Empty state -->
             <div id="emptyState" class="empty-state">
                 <div class="icon">🃏</div>
-                <p>Enter card names in the sidebar and click <strong>Fetch &amp; Preview</strong> to see your proxy sheet.</p>
+                <p>Enter card names in the sidebar and click <strong>Load Cards</strong> to select variants and preview your proxy sheet.</p>
             </div>
         </main>
     </div>

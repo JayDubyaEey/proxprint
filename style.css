@@ -512,3 +512,310 @@ textarea#cardList:focus {
         border-bottom: 1px solid var(--border);
     }
 }
+
+/* ================================================================
+   Card List Panel — Variant Selection View
+   ================================================================ */
+
+.card-list-panel {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 640px;
+    gap: 12px;
+}
+
+/* ── Stats summary row ── */
+.cl-stats {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--muted-foreground);
+    padding: 10px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+}
+
+.cl-stats strong {
+    color: var(--foreground);
+}
+
+.cl-stats-sep {
+    color: var(--taupe-600);
+}
+
+/* ── Card list container ── */
+.cl-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+/* ── Individual card row ── */
+.cl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    position: relative;
+    transition: border-color 0.15s;
+}
+
+.cl-row:hover {
+    border-color: var(--taupe-700);
+}
+
+.cl-row-error {
+    border-color: var(--mauve-700);
+    opacity: 0.7;
+}
+
+/* ── Thumbnail wrapper ── */
+.cl-thumb-wrap {
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 2px);
+    overflow: visible;
+}
+
+.cl-thumb {
+    width: 48px;
+    height: 67px;
+    object-fit: cover;
+    border-radius: calc(var(--radius) - 2px);
+    display: block;
+    background: var(--muted);
+}
+
+.cl-variant-btn {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    line-height: 1.4;
+}
+
+.cl-variant-btn:hover {
+    background: var(--mauve-600);
+}
+
+/* ── Row info ── */
+.cl-row-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.cl-qty {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--primary);
+    min-width: 28px;
+}
+
+.cl-name {
+    font-size: 0.88rem;
+    color: var(--foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cl-set {
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+    background: var(--muted);
+    padding: 1px 6px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.cl-dfc-badge {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--deep-sky-blue-300);
+    background: oklch(48.74% 0.113 240.76 / 0.15);
+    padding: 1px 5px;
+    border-radius: 6px;
+}
+
+.cl-error-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--mauve-400);
+    background: oklch(52.08% 0.293 290.98 / 0.1);
+    padding: 1px 6px;
+    border-radius: 6px;
+}
+
+/* ================================================================
+   Variant Popover
+   ================================================================ */
+
+.variant-popover {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    margin-top: 6px;
+    background: var(--popover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 32px oklch(0% 0 0 / 0.5);
+    min-width: 280px;
+    max-width: 420px;
+    max-height: 360px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: popoverIn 0.12s ease-out;
+}
+
+@keyframes popoverIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.vp-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.vp-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--foreground);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vp-count {
+    font-size: 0.7rem;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+}
+
+.vp-close {
+    background: none;
+    border: none;
+    color: var(--muted-foreground);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.15s;
+}
+
+.vp-close:hover {
+    color: var(--foreground);
+}
+
+/* ── Variant Grid ── */
+.vp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.vp-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px;
+    border: 2px solid transparent;
+    border-radius: calc(var(--radius) - 1px);
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.vp-option:hover {
+    background: var(--muted);
+    border-color: var(--taupe-700);
+}
+
+.vp-option-selected {
+    border-color: var(--primary);
+    background: oklch(52.08% 0.293 290.98 / 0.08);
+}
+
+.vp-thumb {
+    width: 70px;
+    height: 98px;
+    object-fit: cover;
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--muted);
+    display: block;
+}
+
+.vp-label {
+    font-size: 0.62rem;
+    color: var(--muted-foreground);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* ================================================================
+   Preview Panel
+   ================================================================ */
+
+.preview-panel {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* ── Secondary button (Back to Cards) ── */
+.btn-secondary {
+    background: transparent;
+    color: var(--muted-foreground);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--muted);
+    color: var(--foreground);
+}
+
+/* ── Button spacing within actions section ── */
+.sidebar-section .btn + .btn {
+    margin-top: 8px;
+}
