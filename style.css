@@ -1,11 +1,127 @@
+/* ================================================================
+   MTG Proxy Builder — Design System
+   Inspired by shadcn/ui theming with custom colour palette.
+   Uses CSS custom properties (OKLCH) + semantic tokens.
+   ================================================================ */
+
+/* ── Colour Palette ──────────────────────────────────────── */
+:root {
+    /* Mauve — primary accent */
+    --mauve-50:  oklch(93.91% 0.037 306.42);
+    --mauve-100: oklch(88.14% 0.074 306.26);
+    --mauve-200: oklch(76.63% 0.149 304.80);
+    --mauve-300: oklch(65.96% 0.220 302.08);
+    --mauve-400: oklch(57.39% 0.272 297.96);
+    --mauve-500: oklch(52.08% 0.293 290.98);
+    --mauve-600: oklch(44.15% 0.248 291.47);
+    --mauve-700: oklch(35.85% 0.200 292.27);
+    --mauve-800: oklch(27.17% 0.150 294.52);
+    --mauve-900: oklch(17.60% 0.095 298.87);
+    --mauve-950: oklch(14.56% 0.077 301.86);
+
+    /* Lavender Purple — secondary */
+    --lavender-purple-50:  oklch(95.25% 0.012 291.29);
+    --lavender-purple-100: oklch(90.49% 0.023 294.03);
+    --lavender-purple-200: oklch(80.63% 0.051 294.15);
+    --lavender-purple-300: oklch(70.73% 0.077 292.97);
+    --lavender-purple-400: oklch(60.41% 0.108 291.09);
+    --lavender-purple-500: oklch(50.25% 0.137 288.76);
+    --lavender-purple-600: oklch(42.96% 0.115 288.90);
+    --lavender-purple-700: oklch(35.57% 0.089 289.75);
+    --lavender-purple-800: oklch(27.54% 0.065 290.42);
+    --lavender-purple-900: oklch(19.07% 0.034 290.91);
+    --lavender-purple-950: oklch(16.35% 0.025 291.01);
+
+    /* Deep Sky Blue — accent / highlights */
+    --deep-sky-blue-50:  oklch(96.32% 0.022 230.54);
+    --deep-sky-blue-100: oklch(93% 0.042 229.44);
+    --deep-sky-blue-200: oklch(86.41% 0.083 230.61);
+    --deep-sky-blue-300: oklch(80.39% 0.119 232.69);
+    --deep-sky-blue-400: oklch(75.13% 0.148 236.31);
+    --deep-sky-blue-500: oklch(70.72% 0.168 242.04);
+    --deep-sky-blue-600: oklch(59.98% 0.141 241.55);
+    --deep-sky-blue-700: oklch(48.74% 0.113 240.76);
+    --deep-sky-blue-800: oklch(36.80% 0.083 239.21);
+    --deep-sky-blue-900: oklch(23.78% 0.050 235);
+    --deep-sky-blue-950: oklch(19.63% 0.040 231.93);
+
+    /* Taupe — neutral base */
+    --taupe-50:  oklch(96.16% 0.002 67.80);
+    --taupe-100: oklch(92.37% 0.004 56.37);
+    --taupe-200: oklch(84.53% 0.007 53.43);
+    --taupe-300: oklch(76.56% 0.012 54.45);
+    --taupe-400: oklch(68.32% 0.015 53.25);
+    --taupe-500: oklch(59.69% 0.020 48.36);
+    --taupe-600: oklch(51.07% 0.016 53.13);
+    --taupe-700: oklch(41.91% 0.014 54.22);
+    --taupe-800: oklch(32.13% 0.009 53.17);
+    --taupe-900: oklch(21.61% 0.006 56.04);
+    --taupe-950: oklch(17.96% 0.004 48.50);
+
+    /* Charcoal Brown — card / sidebar surfaces */
+    --charcoal-brown-50:  oklch(96.31% 0.002 145.56);
+    --charcoal-brown-100: oklch(92.39% 0.002 145.56);
+    --charcoal-brown-200: oklch(84.79% 0.006 137.78);
+    --charcoal-brown-300: oklch(76.92% 0.008 132.43);
+    --charcoal-brown-400: oklch(68.77% 0.010 134.90);
+    --charcoal-brown-500: oklch(60.36% 0.012 136.59);
+    --charcoal-brown-600: oklch(51.54% 0.010 134.93);
+    --charcoal-brown-700: oklch(42.32% 0.009 132.52);
+    --charcoal-brown-800: oklch(32.46% 0.008 137.81);
+    --charcoal-brown-900: oklch(21.63% 0.002 145.49);
+    --charcoal-brown-950: oklch(18.18% 0.002 106.60);
+
+    /* ── Semantic Tokens (shadcn-style) ───────────────────── */
+    --background:           var(--taupe-950);
+    --foreground:           var(--taupe-100);
+
+    --card:                 var(--charcoal-brown-900);
+    --card-foreground:      var(--taupe-100);
+
+    --popover:              var(--charcoal-brown-900);
+    --popover-foreground:   var(--taupe-100);
+
+    --primary:              var(--mauve-500);
+    --primary-foreground:   var(--mauve-50);
+
+    --secondary:            var(--lavender-purple-800);
+    --secondary-foreground: var(--lavender-purple-100);
+
+    --muted:                var(--taupe-800);
+    --muted-foreground:     var(--taupe-400);
+
+    --accent:               var(--deep-sky-blue-700);
+    --accent-foreground:    var(--deep-sky-blue-50);
+
+    --destructive:          var(--mauve-600);
+    --destructive-foreground: var(--mauve-50);
+
+    --border:               var(--taupe-800);
+    --input:                var(--taupe-800);
+    --ring:                 var(--mauve-500);
+
+    --radius:               0.5rem;
+
+    /* ── Derived helpers ──────────────────────────────────── */
+    --sidebar-bg:           var(--charcoal-brown-900);
+    --sidebar-border:       var(--taupe-800);
+}
+
 /* ===== Reset & Base ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: #1a1a2e;
-    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 Helvetica, Arial, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ===== Layout ===== */
@@ -16,8 +132,8 @@ body {
 }
 
 header {
-    background: #16213e;
-    border-bottom: 1px solid #0f3460;
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid var(--border);
     padding: 16px 24px;
     display: flex;
     align-items: center;
@@ -27,13 +143,13 @@ header {
 header h1 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #e94560;
+    color: var(--primary);
     letter-spacing: 0.5px;
 }
 
 header .subtitle {
     font-size: 0.8rem;
-    color: #888;
+    color: var(--muted-foreground);
 }
 
 .main-content {
@@ -46,8 +162,8 @@ header .subtitle {
 .sidebar {
     width: 340px;
     min-width: 340px;
-    background: #16213e;
-    border-right: 1px solid #0f3460;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -55,14 +171,14 @@ header .subtitle {
 
 .sidebar-section {
     padding: 16px;
-    border-bottom: 1px solid #0f3460;
+    border-bottom: 1px solid var(--border);
 }
 
 .sidebar-section h3 {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #888;
+    color: var(--muted-foreground);
     margin-bottom: 10px;
 }
 
@@ -70,30 +186,31 @@ header .subtitle {
 textarea#cardList {
     width: 100%;
     height: 140px;
-    background: #1a1a2e;
-    border: 1px solid #0f3460;
-    border-radius: 6px;
-    color: #e0e0e0;
+    background: var(--background);
+    border: 1px solid var(--input);
+    border-radius: var(--radius);
+    color: var(--foreground);
     font-family: 'Consolas', 'Fira Code', monospace;
     font-size: 0.85rem;
     padding: 10px;
     resize: vertical;
     line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 textarea#cardList::placeholder {
-    color: #555;
+    color: var(--taupe-600);
 }
 
 textarea#cardList:focus {
     outline: none;
-    border-color: #e94560;
-    box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.2);
+    border-color: var(--ring);
+    box-shadow: 0 0 0 2px oklch(52.08% 0.293 290.98 / 0.2);
 }
 
 .input-help {
     font-size: 0.72rem;
-    color: #666;
+    color: var(--taupe-600);
     margin-top: 6px;
     line-height: 1.4;
 }
@@ -112,16 +229,16 @@ textarea#cardList:focus {
 
 .setting-row label {
     font-size: 0.82rem;
-    color: #ccc;
+    color: var(--taupe-200);
 }
 
 .setting-row select,
 .setting-row input[type="color"],
 .setting-row input[type="range"] {
-    background: #1a1a2e;
-    border: 1px solid #0f3460;
-    color: #e0e0e0;
-    border-radius: 4px;
+    background: var(--background);
+    border: 1px solid var(--input);
+    color: var(--foreground);
+    border-radius: calc(var(--radius) - 2px);
     padding: 4px 8px;
     font-size: 0.8rem;
 }
@@ -133,7 +250,7 @@ textarea#cardList:focus {
 
 .setting-row select:focus {
     outline: none;
-    border-color: #e94560;
+    border-color: var(--ring);
 }
 
 .setting-row input[type="color"] {
@@ -141,18 +258,18 @@ textarea#cardList:focus {
     height: 28px;
     padding: 2px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: calc(var(--radius) - 2px);
 }
 
 .setting-row input[type="range"] {
     width: 100px;
     cursor: pointer;
-    accent-color: #e94560;
+    accent-color: var(--primary);
 }
 
 .range-value {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--muted-foreground);
     min-width: 36px;
     text-align: right;
 }
@@ -164,7 +281,7 @@ textarea#cardList:focus {
     justify-content: center;
     gap: 6px;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius);
     padding: 10px 18px;
     font-size: 0.85rem;
     font-weight: 600;
@@ -179,34 +296,34 @@ textarea#cardList:focus {
 }
 
 .btn-primary {
-    background: #e94560;
-    color: #fff;
+    background: var(--primary);
+    color: var(--primary-foreground);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: #c73550;
+    background: var(--mauve-600);
 }
 
 .btn-download {
-    background: #0f3460;
-    color: #e0e0e0;
-    border: 1px solid #1a5276;
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--lavender-purple-700);
 }
 
 .btn-download:hover:not(:disabled) {
-    background: #1a5276;
+    background: var(--lavender-purple-700);
 }
 
 .btn-clear {
     background: transparent;
-    color: #888;
-    border: 1px solid #333;
+    color: var(--muted-foreground);
+    border: 1px solid var(--border);
     margin-top: 8px;
 }
 
 .btn-clear:hover:not(:disabled) {
-    background: rgba(255,255,255,0.05);
-    color: #ccc;
+    background: var(--muted);
+    color: var(--taupe-200);
 }
 
 /* ===== Progress ===== */
@@ -222,14 +339,14 @@ textarea#cardList:focus {
 .progress-bar-track {
     width: 100%;
     height: 6px;
-    background: #1a1a2e;
+    background: var(--muted);
     border-radius: 3px;
     overflow: hidden;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: #e94560;
+    background: var(--primary);
     border-radius: 3px;
     width: 0%;
     transition: width 0.2s ease;
@@ -237,7 +354,7 @@ textarea#cardList:focus {
 
 .progress-text {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--muted-foreground);
     margin-top: 4px;
 }
 
@@ -247,13 +364,13 @@ textarea#cardList:focus {
 }
 
 .error-item {
-    background: rgba(233, 69, 96, 0.1);
-    border-left: 3px solid #e94560;
+    background: oklch(52.08% 0.293 290.98 / 0.1);
+    border-left: 3px solid var(--primary);
     padding: 6px 10px;
     margin-bottom: 4px;
     font-size: 0.75rem;
-    color: #e94560;
-    border-radius: 0 4px 4px 0;
+    color: var(--mauve-400);
+    border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0;
 }
 
 /* ===== Preview Area ===== */
@@ -272,10 +389,10 @@ textarea#cardList:focus {
     display: flex;
     align-items: center;
     gap: 24px;
-    background: #16213e;
+    background: var(--card);
     padding: 12px 20px;
-    border-radius: 8px;
-    border: 1px solid #0f3460;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
     width: 100%;
     max-width: 700px;
 }
@@ -289,20 +406,20 @@ textarea#cardList:focus {
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #e94560;
+    color: var(--primary);
 }
 
 .stat-label {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #888;
+    color: var(--muted-foreground);
 }
 
 .stats-bar .divider {
     width: 1px;
     height: 32px;
-    background: #0f3460;
+    background: var(--border);
 }
 
 /* ===== Page Previews ===== */
@@ -324,7 +441,7 @@ textarea#cardList:focus {
 
 .page-label {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--muted-foreground);
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -332,8 +449,8 @@ textarea#cardList:focus {
 
 .page-canvas {
     background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    border-radius: calc(var(--radius) - 2px);
+    box-shadow: 0 4px 24px oklch(0% 0 0 / 0.5);
     max-width: 100%;
     height: auto;
 }
@@ -345,7 +462,7 @@ textarea#cardList:focus {
     align-items: center;
     justify-content: center;
     flex: 1;
-    color: #555;
+    color: var(--taupe-600);
     gap: 12px;
     text-align: center;
     padding: 40px;
@@ -364,20 +481,20 @@ textarea#cardList:focus {
 
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #1a1a2e; }
-::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #1a5276; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--taupe-800); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--taupe-700); }
 
 /* ===== Database Status Footer ===== */
 .sidebar-footer {
     margin-top: auto;
-    border-top: 1px solid #0f3460;
+    border-top: 1px solid var(--border);
     border-bottom: none;
 }
 
 .db-status {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--taupe-600);
     text-align: center;
     line-height: 1.4;
 }
@@ -392,6 +509,6 @@ textarea#cardList:focus {
         min-width: unset;
         max-height: 50vh;
         border-right: none;
-        border-bottom: 1px solid #0f3460;
+        border-bottom: 1px solid var(--border);
     }
 }
