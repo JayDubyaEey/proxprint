@@ -394,7 +394,7 @@ textarea#cardList:focus {
     border-radius: var(--radius);
     border: 1px solid var(--border);
     width: 100%;
-    max-width: 700px;
+    max-width: 960px;
 }
 
 .stat {
@@ -521,7 +521,7 @@ textarea#cardList:focus {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 640px;
+    max-width: 960px;
     gap: 12px;
 }
 
@@ -549,18 +549,31 @@ textarea#cardList:focus {
 
 /* ── Card list container ── */
 .cl-container {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     width: 100%;
+}
+
+@media (max-width: 900px) {
+    .cl-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .cl-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ── Individual card row ── */
 .cl-row {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
+    gap: 8px;
+    padding: 10px;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -580,15 +593,16 @@ textarea#cardList:focus {
 /* ── Thumbnail wrapper ── */
 .cl-thumb-wrap {
     position: relative;
-    flex-shrink: 0;
+    width: 100%;
     cursor: pointer;
     border-radius: calc(var(--radius) - 2px);
     overflow: visible;
 }
 
 .cl-thumb {
-    width: 48px;
-    height: 67px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 488 / 680;
     object-fit: cover;
     border-radius: calc(var(--radius) - 2px);
     display: block;
@@ -621,8 +635,9 @@ textarea#cardList:focus {
 .cl-row-info {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
     min-width: 0;
     flex-wrap: wrap;
 }
@@ -635,11 +650,13 @@ textarea#cardList:focus {
 }
 
 .cl-name {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     color: var(--foreground);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
 }
 
 .cl-set {
